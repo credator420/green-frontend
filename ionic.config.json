@@ -1,0 +1,7 @@
+{
+  "name": "green-app-frontend",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
