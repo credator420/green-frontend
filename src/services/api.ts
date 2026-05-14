@@ -1,4 +1,4 @@
-const BASE_URL = 'http://147.230.1.93:5000/api'; // Replace with your IP!
+const BASE_URL = '147.230.3.208:5000/api'; // Replace with your IP!
 
 export const registerUser = async (userData: any) => {
   const response = await fetch(`${BASE_URL}/register`, {

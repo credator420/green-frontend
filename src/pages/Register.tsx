@@ -8,39 +8,32 @@ const Register: React.FC = () => {
   const history = useHistory();
 
   const handleRegister = async () => {
-    // 1. CLEAN THE DATA (Matches your Login logic)
-    const cleanUsername = form.username.trim().toLowerCase();
-    const cleanPassword = form.password.trim();
-    const cleanAge = form.age.trim();
+    // Scrub data immediately
+    const username = form.username.trim().toLowerCase();
+    const password = form.password.trim();
+    const age = form.age.trim();
 
-    // 2. BASIC VALIDATION
-    if (!cleanUsername || !cleanPassword || !cleanAge) {
+    if (!username || !password || !age) {
       alert("Please fill in all fields.");
       return;
     }
 
-    const ageNum = parseInt(cleanAge);
+    const ageNum = parseInt(age);
     if (isNaN(ageNum) || ageNum < 21) {
-      alert("You must be 21+ to join the community.");
+      alert("You must be 21+ to enter the community.");
       return;
     }
 
     try {
-      // 3. SEND CLEAN DATA TO API
-      const data = await registerUser({
-        username: cleanUsername,
-        password: cleanPassword,
-        age: ageNum
-      });
-      
+      const data = await registerUser({ username, password, age: ageNum });
       if (data.id) {
-        alert("Welcome to the community! Please log in now.");
-        history.push('/login'); // Move to login screen
+        alert("Account created! Welcome to the group.");
+        history.push('/login');
       } else {
-        alert("Error: " + (data.error || "Username already taken or database error."));
+        alert("Error: " + (data.error || "Username taken."));
       }
     } catch (err) {
-      alert("Could not reach the server. Make sure your ThinkPad backend is running!");
+      alert("Backend connection failed.");
     }
   };
 
@@ -48,19 +41,16 @@ const Register: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar color="success">
-          <IonTitle>Join the Community</IonTitle>
+          <IonTitle>Register</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-        <div style={{ textAlign: 'center', marginTop: '10px' }}>
-          <p>Verify your age and choose a username.</p>
-        </div>
         <IonList>
           <IonItem>
             <IonLabel position="floating">Username</IonLabel>
             <IonInput 
               value={form.username} 
-              onIonChange={e => setForm({...form, username: e.detail.value || ''})} 
+              onIonInput={e => setForm({...form, username: e.detail.value!})} 
             />
           </IonItem>
           <IonItem>
@@ -68,7 +58,7 @@ const Register: React.FC = () => {
             <IonInput 
               type="password" 
               value={form.password} 
-              onIonChange={e => setForm({...form, password: e.detail.value || ''})} 
+              onIonInput={e => setForm({...form, password: e.detail.value!})} 
             />
           </IonItem>
           <IonItem>
@@ -76,7 +66,7 @@ const Register: React.FC = () => {
             <IonInput 
               type="number" 
               value={form.age} 
-              onIonChange={e => setForm({...form, age: e.detail.value || ''})} 
+              onIonInput={e => setForm({...form, age: e.detail.value!})} 
             />
           </IonItem>
         </IonList>
@@ -85,7 +75,7 @@ const Register: React.FC = () => {
             Create Account
           </IonButton>
           <IonButton expand="block" fill="clear" onClick={() => history.push('/login')}>
-            Already have an account? Log In
+            Already a member? Log In
           </IonButton>
         </div>
       </IonContent>
